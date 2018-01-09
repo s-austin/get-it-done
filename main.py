@@ -27,17 +27,17 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True)
-    pw_hash = db.Column(db.String(120))
+    password = db.column(db.String(120))
     tasks = db.relationship('Task', backref='owner')
 
     def __init__(self, email, password):
         self.email = email
-        self.pw_hash = make_pw_hash(password)
+        self.password = password
 
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'register', 'static']
+    allowed_routes = ['login', 'register']
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/login')
 
@@ -48,12 +48,13 @@ def login():
         email = request.form['email']
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
-        if user and check_pw_hash(password, user.pw_hash):
+        if user and user.password == password:
             session['email'] = email
-            flash("Logged in", 'info')
+            flash("Logged in")
+            print(session)
             return redirect('/')
         else:
-            flash('User password incorrect, or user does not exist', 'danger')
+            flash('User password incorrect, or user does not exist', 'error')
 
     return render_template('login.html')
 
@@ -75,12 +76,12 @@ def register():
             session['email'] = email
             return redirect('/')
         else:
-            flash("The email <strong>{0}</strong> is already registered".format(email), 'danger')
+            flash("The email <strong>{0}</strong> is already registered")
 
     return render_template('register.html')
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout')
 def logout():
     del session['email']
     return redirect('/')
