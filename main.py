@@ -1,10 +1,10 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from hashutils import make_pw_hash, check_pw_hash
+#from hashutils import make_pw_hash, check_pw_hash
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://get-it-done:beproductive@localhost:8889/get-it-done'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://get-it-done:love@localhost:8889/get-it-done'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'y337kGcys&zP3B'
@@ -116,4 +116,4 @@ def delete_task():
 
 
 if __name__ == '__main__':
-app.run()
+    app.run()
